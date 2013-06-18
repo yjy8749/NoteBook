@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <input type="hidden" id="cata_id" > 
+  <input type="hidden" id="cata_id" value="<?=$catas[0]->id?>"> 
   <input type="hidden" id="record_id">
   <div class="info">
     <a><?=$user['name']?></a><a href="<?=base_url()?>login/safeexit" >安全退出</a>
@@ -35,9 +35,12 @@
       </div>
       <!-- catas area -->
       <?php foreach ($catas as $cata_item):?>
-      <div class="cata"> <img src="img/bz.png">
-        <input type="text" readonly value="<?=$cata_item->name?>" name="username">
-        <img class="cataadd" src="img/jia.png">
+      <div class="cata" id="cata<?=$cata_item->id?>"> <img src="img/bz.png">
+        <input type="text" readonly value="<?=$cata_item->name?>" id="cata_name">
+        <input type="hidden" id="id" value="<?=$cata_item->id?>">
+        <img class="cataadd update" src="img/bi.png">
+        <img class="cataadd delete" src="img/cha.png">
+        <img class="cataadd add" src="img/jia.png">
       </div>
       <?php endforeach?>
 
@@ -63,9 +66,29 @@
 </div>
 <!-- /surebox -->
 <script type="text/javascript">
-$("#addrecord").click(function(){
-    addARecord();
+$(function(){
+  $("#addrecord").click(function(){
+      addARecord();
+    });
+
+  var cataid=$("#cata_id").val();
+  $("#cata"+cataid).addClass("checked");
+
+  $(".cata").click(function(){
+    selectCata($(this));
   });
+  
+  $(".add").click(function(){
+    addCata();
+  });
+  $(".update").click(function(){
+    updateCata();
+  });
+  $(".delete").click(function(){
+    deleteCata();
+  });
+
+});
 </script>
 </body>
 </html>

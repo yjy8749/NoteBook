@@ -56,9 +56,15 @@ input,button,select,textarea{ outline:none;}
 .cata{width: 250px;height: 35px;background: #FFF;margin-top: 5px;background: #CCC;border: none; position:relative;}
 .cata input{width: 200px;height: 32px;border: none;margin-top: 0;padding: 0;background: #CCC;}
 .cataadd{position: absolute;left:250px;top:0px;display: none;}
+.update{top: 5px;left: 220px;}
+.delete{top:5px;}
+.add{left: 270px;}
+
 .cata:hover .cataadd{display:block;}
 .cata:hover{background-color: #FFF;}
 .cata:hover input{background:#fff;}
+.checked{background-color: #FFF;}
+.checked input{background:#fff;}
 
 .error{background:url(../img/msgbox.jpg) #FFF no-repeat;height: 166px;width: 378px;box-shadow: 1px 1px 20px #333333;position: relative;margin: auto;top: 250px;}
 .errorbg2{background-image: url(../img/surebox.jpg);}

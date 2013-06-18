@@ -101,7 +101,39 @@ function checkName(){
 	}
 	setRegMsg("信息收集完毕，点击提交进行注册.",true);
 }
+var cathtml=" <div class='cata' id='null'> <img src='img/bz.png'>"+
+        "<input type='text' readonly placeholder='请输入新的目录名' value='' id='cata_name'>"+
+        "<input type='hidden' id='id' value=''>"+
+        "<img class='cataadd update' src='img/bi.png'>"+
+        "<img class='cataadd delete' src='img/cha.png'>"+
+        "<img class='cataadd add' src='img/jia.png'>"+
+        "</div>";
+function selectCata(cata){
+     var cata_id=cata.find("#id") .val();
+     if(cata_id!="")	{
+     	$("#cata_id").val(cata_id);
+     	$(".checked").removeClass("checked");
+     	cata.addClass("checked");
+     }
+}
+function addCata(){
+	if($("#null").html()==null) $(".rows").append(cathtml);
+	var newcata=$("#null");
+	  newcata.click(function(){
+	    selectCata(newcata);
+	  });
 
-function addARecord(){
-	
+	  newcata.find(".add").click(function(){
+	    addCata();
+	  });
+	  newcata.find(".update").click(function(){
+	    updateCata();
+	  });
+	  newcata.find(".delete").click(function(){
+	    deleteCata();
+	  });
+}
+function updateCata(){
+	var total_cata=$("#cata"+)
+	total_cata.
 }
