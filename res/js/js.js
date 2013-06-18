@@ -102,7 +102,7 @@ function checkName(){
 	setRegMsg("信息收集完毕，点击提交进行注册.",true);
 }
 var cathtml=" <div class='cata' id='null'> <img src='img/bz.png'>"+
-        "<input type='text' readonly placeholder='请输入新的目录名' value='' id='cata_name'>"+
+        "<input type='text'  placeholder='请输入新的目录名' value='' id='cata_name'>"+
         "<input type='hidden' id='id' value=''>"+
         "<img class='cataadd update' src='img/bi.png'>"+
         "<img class='cataadd delete' src='img/cha.png'>"+
@@ -111,7 +111,7 @@ var cathtml=" <div class='cata' id='null'> <img src='img/bz.png'>"+
 function selectCata(cata){
      var cata_id=cata.find("#id") .val();
      if(cata_id!="")	{
-     	$("#cata_id").val(cata_id);
+     	cataid=cata_id;
      	$(".checked").removeClass("checked");
      	cata.addClass("checked");
      }
@@ -122,18 +122,73 @@ function addCata(){
 	  newcata.click(function(){
 	    selectCata(newcata);
 	  });
-
-	  newcata.find(".add").click(function(){
-	    addCata();
-	  });
-	  newcata.find(".update").click(function(){
-	    updateCata();
-	  });
-	  newcata.find(".delete").click(function(){
-	    deleteCata();
+	  var cname=newcata.find("#cata_name");
+	  cname.focus();
+	  cname.focusout(function(){
+	  	if(cname.val()=="") {
+	  		newcata.remove();
+	  		return;
+	  	}
+		 $.ajax({
+			url: base_url+"catas/add",  
+			type: 'POST',  
+			data:{"cata_name":cname.val()},
+			timeout: 30000,  
+			error: function(){alert("目录出错,请刷新页面后重试！");},  
+			success: function(ans){ 
+				if(ans!="") {
+					newcata.attr('id','cata'+ans);
+					newcata.find("#cata_name").attr("readonly",true);
+					newcata.find("#id").val(ans);
+					newcata.mouseover(function(){
+					    cataid=ans;
+					   });
+					newcata.find(".add").click(function(){
+					    addCata();
+					  });
+					newcata.find(".update").click(function(){
+					    updateCata();
+					  });
+					newcata.find(".delete").click(function(){
+					    deleteCata();
+					  });
+				}else{
+					newcata.remove();
+				}
+			}
+		});
 	  });
 }
 function updateCata(){
-	var total_cata=$("#cata"+)
-	total_cata.
+	var total_cata=$("#cata"+cataid);
+	var cname=total_cata.find("#cata_name");
+	var cata_name=cname.val();
+	cname.attr("readonly",false);
+	cname.focus();
+	cname.focusout(function(){
+	  	if(cname.val()==""||cata_name==cname.val()) {
+	  		 cname.val(cata_name);
+	  		return;
+	  	}
+		 $.ajax({
+			url: base_url+"catas/update",  
+			type: 'POST',  
+			data:{"cata_name":cname.val(),"cata_id":cataid},
+			timeout: 30000,  
+			error: function(){alert("目录出错,请刷新页面后重试！");}
+		});
+	  });
+	cname.attr("readonly",true);
+}
+function deleteCata(){
+		$.ajax({
+			url: base_url+"catas/delete",  
+			type: 'POST',  
+			data:{"cata_id":cataid},
+			timeout: 30000,  
+			error: function(){alert("目录出错,请刷新页面后重试！");},
+			success: function(ans){ 
+				$("#cata"+cataid).remove();
+			}
+		});
 }

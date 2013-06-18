@@ -10,8 +10,6 @@
 </head>
 
 <body>
-  <input type="hidden" id="cata_id" value="<?=$catas[0]->id?>"> 
-  <input type="hidden" id="record_id">
   <div class="info">
     <a><?=$user['name']?></a><a href="<?=base_url()?>login/safeexit" >安全退出</a>
   </div>
@@ -66,18 +64,21 @@
 </div>
 <!-- /surebox -->
 <script type="text/javascript">
+var base_url="<?=base_url()?>";
+var cataid=<?=$catas[0]->id?>;
 $(function(){
   $("#addrecord").click(function(){
       addARecord();
     });
 
-  var cataid=$("#cata_id").val();
   $("#cata"+cataid).addClass("checked");
 
   $(".cata").click(function(){
     selectCata($(this));
   });
-  
+   $(".cata").mouseover(function(){
+    cataid=$(this).find("#id").val();
+   });
   $(".add").click(function(){
     addCata();
   });
