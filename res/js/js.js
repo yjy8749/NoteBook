@@ -114,6 +114,8 @@ function selectCata(cata){
      	cataid=cata_id;
      	$(".checked").removeClass("checked");
      	cata.addClass("checked");
+     	$(".forcata").removeClass("forcata");
+  	$("#forcata"+cataid).addClass("forcata");
      }
 }
 function addCata(){
@@ -134,15 +136,19 @@ function addCata(){
 			type: 'POST',  
 			data:{"cata_name":cname.val()},
 			timeout: 30000,  
-			error: function(){alert("目录出错,请刷新页面后重试！");},  
+			error: function(){alert("操作出错,请刷新页面后重试！");},  
 			success: function(ans){ 
 				if(ans!="") {
 					newcata.attr('id','cata'+ans);
 					newcata.find("#cata_name").attr("readonly",true);
 					newcata.find("#id").val(ans);
+					$('.context').append("<div id='"+ans+"' class='hidden'>");
 					newcata.mouseover(function(){
-					    cataid=ans;
+					    mouseoverCata();
 					   });
+					newcata.mouseleave(function(){
+					    mouseleaveCata();
+					  });
 					newcata.find(".add").click(function(){
 					    addCata();
 					  });
@@ -157,6 +163,7 @@ function addCata(){
 				}
 			}
 		});
+		cname.unbind("focusout");
 	  });
 }
 function updateCata(){
@@ -175,20 +182,113 @@ function updateCata(){
 			type: 'POST',  
 			data:{"cata_name":cname.val(),"cata_id":cataid},
 			timeout: 30000,  
-			error: function(){alert("目录出错,请刷新页面后重试！");}
+			error: function(){alert("操作出错,请刷新页面后重试！");}
 		});
+		cname.attr("readonly",true);
 	  });
-	cname.attr("readonly",true);
+	
 }
 function deleteCata(){
+	$(".surebtn").click(function(){
 		$.ajax({
 			url: base_url+"catas/delete",  
 			type: 'POST',  
 			data:{"cata_id":cataid},
 			timeout: 30000,  
-			error: function(){alert("目录出错,请刷新页面后重试！");},
+			error: function(){alert("操作出错,请刷新页面后重试！");},
 			success: function(ans){ 
 				$("#cata"+cataid).remove();
+				$("#forcata"+cataid).remove();
 			}
 		});
+		$('#surebox').hide()
+		$('.surebtn').unbind('click');
+	});
+	$("#sureboxmsg").empty();
+	$("#sureboxmsg").append("删除目录也将删除目录下的备忘是否继续？");
+	$("#surebox").show();
+}
+function mouseoverCata(c){
+	cataid=c.find("#id").val();
+}
+function mouseleaveCata(){
+	cataid=$(".checked").find("#id").val();
+}
+function mouseoverRecord(r){
+	recordid=r.find("#id").val();
+}
+function mouseleaveRecord(r){
+	recordid=-1;
+}
+
+var recordHTML="<div class='record'>"+
+        "<p></p>"+
+        "<img src='img/cha.png'><img src='img/bi.png'><img src='img/gou.png'>"+
+      "</div>";
+function  addARecord(){
+	var t=$("#title")
+	if(t.val()!=""){
+		 $.ajax({
+			url: base_url+"records/add",  
+			type: 'POST',  
+			data:{"cata_id":cataid,"title":t.val()},
+			timeout: 30000,  
+			error: function(){alert("操作出错,请刷新页面后重试！");},  
+			success: function(ans){ 
+					if(ans!="") {
+					var recordHTML="<div class='record' id='record"+ans+
+						"'><p>"+t.val()+"</p>"+
+						"<input type='hidden' value='"+ans+"' id='id'/>"+
+						"<img src='img/cha.png' class='rdelete'><img src='img/bi.png' class='rupdate'><img src='img/gou.png' class='rcomp'>"+
+						"<textarea class='remark' placeholder='您还未为此记录添加备注'  id='remark' ></textarea>"+
+						"</div>";
+					$("#forcata"+cataid).append(recordHTML);
+					$("#record"+ans).mouseover(function(){mouseoverRecord($(this));});
+					 $("#record"+ans).mouseleave(function(){mouseleaveRecord($(this));});
+				}
+			}
+		});
+	}
+}
+
+function deleteRecord(click_id){
+	$(".surebtn").click(function(){
+		$.ajax({
+			url: base_url+"records/delete",  
+			type: 'POST',  
+			data:{"record_id":click_id},
+			timeout: 30000,  
+			error: function(){alert("操作出错,请刷新页面后重试！");},
+			success: function(ans){ 
+				$("#record"+click_id).remove();
+			}
+		});
+		$('#surebox').hide()
+		$('.surebtn').unbind('click');
+	});
+	$("#sureboxmsg").empty();
+	$("#sureboxmsg").append("是否删除该备忘记录？");
+	$("#surebox").show();
+}
+function compRecord(){
+	$.ajax({
+		url: base_url+"records/comp",  
+		type: 'POST',  
+		data:{"record_id":recordid},
+		timeout: 30000,  
+		error: function(){alert("操作出错,请刷新页面后重试！");},
+		success: function(ans){ 
+			if(ans!=""){
+				var rr=$("#record"+recordid);
+				var rp=rr.find('p');
+				rp.removeClass();
+				rp.addClass('state'+ans);
+				if(ans==1){
+					$("#forcata"+cataid).append(rr);
+				}else{
+					$("#forcata"+cataid).prepend(rr);
+				}
+			}
+		}
+	});
 }

@@ -5,6 +5,7 @@ class Register extends CI_Controller {
 		parent::__construct();
 		$this->load->model('muser');
 		$this->load->model('mcata');
+		$this->load->model('mrecord');
 		$this->load->helper('url');
 		$this->load->library('session');
 	}
@@ -23,6 +24,10 @@ class Register extends CI_Controller {
 				$this->session->set_userdata('user_id', $data['user']['id']);
 				$this->mcata->add_cata($data['user']['id']);
 				$data['catas']=$this->mcata->get_catas($data['user']['id']);
+				foreach( $data['catas'] as $k => $v )
+				{
+					$data['records'][$v->id]=$this->mrecord->get_record_by_cataid($v->id);
+				}
 				$data['user']['name']=$name;
 				$this->load->view('user_index',$data);
 				return;

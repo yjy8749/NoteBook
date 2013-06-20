@@ -5,6 +5,7 @@ class Login extends CI_Controller {
 		parent::__construct();
 		$this->load->model('muser');
 		$this->load->model('mcata');
+		$this->load->model('mrecord');
 		$this->load->library('session');
 		$this->load->helper('url');
 	}
@@ -22,6 +23,10 @@ class Login extends CI_Controller {
 			if(!empty($data['user'])) {
 				$this->session->set_userdata('user_id', $data['user']['id']);
 				$data['catas']=$this->mcata->get_catas($data['user']['id']);
+				foreach( $data['catas'] as $k => $v )
+				{
+					$data['records'][$v->id]=$this->mrecord->get_record_by_cataid($v->id);
+				}
 				$this->load->view('user_index',$data);
 			}
 			else {

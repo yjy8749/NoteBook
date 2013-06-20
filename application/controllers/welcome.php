@@ -6,6 +6,7 @@ class Welcome extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->model('muser');
 		$this->load->model('mcata');
+		$this->load->model('mrecord');
 		$this->load->library('session');
 	}
 	public function index()
@@ -15,6 +16,10 @@ class Welcome extends CI_Controller {
 			$data['user'] = $this->muser->get_user_by_id($user_id);
 			if(!empty($data['user'])) {
 				$data['catas']=$this->mcata->get_catas($data['user']['id']);
+				foreach( $data['catas'] as $k => $v )
+				{
+					$data['records'][$v->id]=$this->mrecord->get_record_by_cataid($v->id);
+				}
 				$this->load->view('user_index',$data);
 				return;
 			}
