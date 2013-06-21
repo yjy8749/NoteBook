@@ -7,6 +7,7 @@
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/js.js"></script>
+<script type="text/javascript" src="js/util.js"></script>
 </head>
 
 <body>
@@ -14,7 +15,8 @@
     <a><?=$user['name']?></a><a href="<?=base_url()?>login/safeexit" >安全退出</a>
   </div>
 <div class="main">
-  <div class="ht"></div>
+      <div class="ht"></div>
+      <div class="fleft"></div>
   <!-- left -->
   <div class="left">
     <div>
@@ -27,7 +29,7 @@
           <?php foreach ($re_items as $record_item):?>
         <div class="record" id="record<?=$record_item->id?>"><p class="state<?= $record_item->state?>"><?=$record_item->title?></p>
           <input type="hidden" value="<?=$record_item->id?>" id="id"/>
-          <img src="img/cha.png" class="rdelete"><img src="img/bi.png" class="rupdate"><img src="img/gou.png" class="rcomp">
+          <img src="img/cha.png" class="rdelete"><img src="img/bi.png" class="rupdate"><img src="img/gou<?=$record_item->state?>.png" class="rcomp">
           <textarea class="remark" placeholder="您还未为此记录添加备注"  id="remark" ><?=$record_item->remark?></textarea>
         </div>
           <?php endforeach?>
@@ -74,6 +76,19 @@
     <img src="img/x.png" class="fr" onclick="$('#surebox').hide()"></div>
 </div>
 <!-- /surebox -->
+<!-- editbox -->
+<div id="editbox" class="black_overlay hidden">
+<div class="editbody">
+  <img class="fl" src="img/side1.png">
+<div class="bg"></div>
+<textarea id="edittitle" class="title"></textarea>
+<textarea id="editremark" class="area"></textarea>
+<div class="editbtn">
+  <img src="img/edit (3).png" onclick="$('#editbox').hide()"><img  class="surebtn2"src="img/edit (4).png" ></div>
+<img class="fr" src="img/f2.png"><img src="img/e3_03.png" class="et">
+<img src="img/e3_06.png" class="er"></div>
+ </div>
+ <!-- /editbox -->
 <script type="text/javascript">
 var base_url="<?=base_url()?>";
 var cataid=<?=$catas[0]->id?>;
@@ -119,6 +134,9 @@ $(function(){
     });
     $(".rcomp").click(function(){
     compRecord();
+    });
+    $(".rupdate").click(function(){
+    updateRecord(recordid);
     });
 
 });

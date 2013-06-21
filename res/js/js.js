@@ -142,7 +142,7 @@ function addCata(){
 					newcata.attr('id','cata'+ans);
 					newcata.find("#cata_name").attr("readonly",true);
 					newcata.find("#id").val(ans);
-					$('.context').append("<div id='"+ans+"' class='hidden'>");
+					$('.context').append("<div id='forcata"+ans+"' class='hidden'>");
 					newcata.mouseover(function(){
 					    mouseoverCata();
 					   });
@@ -175,15 +175,16 @@ function updateCata(){
 	cname.focusout(function(){
 	  	if(cname.val()==""||cata_name==cname.val()) {
 	  		 cname.val(cata_name);
-	  		return;
 	  	}
-		 $.ajax({
-			url: base_url+"catas/update",  
-			type: 'POST',  
-			data:{"cata_name":cname.val(),"cata_id":cataid},
-			timeout: 30000,  
-			error: function(){alert("操作出错,请刷新页面后重试！");}
-		});
+		else{
+			$.ajax({
+					url: base_url+"catas/update",  
+					type: 'POST',  
+					data:{"cata_name":cname.val(),"cata_id":cataid},
+					timeout: 30000,  
+					error: function(){alert("操作出错,请刷新页面后重试！");}
+				});
+			}
 		cname.attr("readonly",true);
 	  });
 	
@@ -216,6 +217,9 @@ function mouseleaveCata(){
 }
 function mouseoverRecord(r){
 	recordid=r.find("#id").val();
+	var remark=r.find("#remark");
+	remark.textareaAutoHeight();
+	remark.trigger("change");
 }
 function mouseleaveRecord(r){
 	recordid=-1;
@@ -239,12 +243,18 @@ function  addARecord(){
 					var recordHTML="<div class='record' id='record"+ans+
 						"'><p>"+t.val()+"</p>"+
 						"<input type='hidden' value='"+ans+"' id='id'/>"+
-						"<img src='img/cha.png' class='rdelete'><img src='img/bi.png' class='rupdate'><img src='img/gou.png' class='rcomp'>"+
+						"<img src='img/cha.png' class='rdelete'><img src='img/bi.png' class='rupdate'><img src='img/gou0.png' class='rcomp'>"+
 						"<textarea class='remark' placeholder='您还未为此记录添加备注'  id='remark' ></textarea>"+
 						"</div>";
-					$("#forcata"+cataid).append(recordHTML);
-					$("#record"+ans).mouseover(function(){mouseoverRecord($(this));});
-					 $("#record"+ans).mouseleave(function(){mouseleaveRecord($(this));});
+					$("#forcata"+cataid).prepend(recordHTML);
+					var newrecord=$("#record"+ans);
+					newrecord.mouseover(function(){mouseoverRecord($(this));});					
+					newrecord.mouseleave(function(){mouseleaveRecord($(this));});
+
+					newrecord.find(".rdelete").click(function(){deleteRecord(recordid);});
+					newrecord.find(".rcomp").click(function(){compRecord();});
+					newrecord.find(".rupdate").click(function(){updateRecord(recordid);});
+
 				}
 			}
 		});
@@ -285,10 +295,41 @@ function compRecord(){
 				rp.addClass('state'+ans);
 				if(ans==1){
 					$("#forcata"+cataid).append(rr);
+					rr.find(".rcomp").attr({"src":"img/gou1.png"});
 				}else{
 					$("#forcata"+cataid).prepend(rr);
+					rr.find(".rcomp").attr({"src":"img/gou0.png"});
 				}
 			}
 		}
 	});
+}
+function updateRecord(click_id){
+	var record=$("#record"+click_id);
+	var oldtitle=record.find("p").text();
+	var oldremark=record.find("#remark").val();
+	$(".surebtn2").click(function(){
+		var title=$("#edittitle").val();
+		var remark=$("#editremark").val();
+		if(title!=oldtitle||remark!=oldremark){
+			$.ajax({
+				url: base_url+"records/update",  
+				type: 'POST',  
+				data:{"record_id":click_id,"title":title,"remark":remark},
+				timeout: 30000,  
+				error: function(){alert("操作出错,请刷新页面后重试！");},
+				success: function(ans){ 
+					if(ans!=""&&ans=="ok"){
+						record.find("p").text(title);
+						record.find("#remark").val(remark);
+					}
+				}
+			});
+		}
+		$('#editbox').hide()
+		$('.surebtn2').unbind('click');
+	});
+	$("#edittitle").val(oldtitle);
+	$("#editremark").val(oldremark);
+	$("#editbox").show();
 }
