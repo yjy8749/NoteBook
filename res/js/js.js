@@ -307,10 +307,8 @@ function compRecord(){
 				rp.removeClass();
 				rp.addClass('state'+ans);
 				if(ans==1){
-					$("#forcata"+cataid).append(rr);
 					rr.find(".rcomp").attr({"src":"img/gou1.png"});
 				}else{
-					$("#forcata"+cataid).prepend(rr);
 					rr.find(".rcomp").attr({"src":"img/gou0.png"});
 				}
 			}
