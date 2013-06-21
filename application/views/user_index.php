@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title><?=$user['name']?>--随记录</title>
 <base href="<?=base_url()."res/"?>"/>
+<link rel="shortcut icon" href="img/favicon.ico" mce_href="img/favicon.ico" type="image/x-icon">
 <link href="css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/js.js"></script>
@@ -35,6 +36,10 @@
           <?php endforeach?>
       </div>
       <?php endforeach?>
+       <div id="forss" class="hidden">
+        <iframe id="siframe" src="http://www.baidu.com/" frameborder="0" height="380px" width="730px" allowTransparency="false">
+        </iframe>
+       </div>
     </div>
   </div>
   <!-- /left --> 
@@ -97,8 +102,17 @@ $(function(){
   $("#addrecord").click(function(){
       addARecord();
     });
-  $(".rows").mouseover(function(){  $(".rows").css("overflow","auto");});
-  $(".rows").mouseleave(function(){  $(".rows").css("overflow","hidden");});
+  $("#title").bind('keydown', function (e) {
+     var key = e.which;
+     if (key == 13) {
+         addARecord();
+      }
+  });
+  $(".ss").bind('keydown', function (e) {
+         getSS();
+  });
+  $(".rows").mouseover(function(){  $(".rows").css("overflow-y","auto");});
+  $(".rows").mouseleave(function(){  $(".rows").css("overflow-y","hidden");});
   
   $("#cata"+cataid).addClass("checked");
   $(".forcata").removeClass("forcata");
@@ -107,6 +121,9 @@ $(function(){
 
   $(".cata").click(function(){
     selectCata($(this));
+  });
+  $(".ss").click(function(){
+    selectSS();
   });
    $(".cata").mouseover(function(){
     mouseoverCata($(this));

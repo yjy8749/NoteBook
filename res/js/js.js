@@ -118,6 +118,16 @@ function selectCata(cata){
   	$("#forcata"+cataid).addClass("forcata");
      }
 }
+function selectSS(){
+	     $(".checked").removeClass("checked");
+	     $(".forcata").removeClass("forcata");
+	     $("#forss").addClass("forcata");
+}
+function getSS(){
+	     var ss=$(".ss") ;
+	     if(ss.val()!="")
+	     	$("#siframe").attr('src','http://www.baidu.com/s?wd='+ss.val());
+}
 function addCata(){
 	if($("#null").html()==null) $(".rows").append(cathtml);
 	var newcata=$("#null");
@@ -213,7 +223,9 @@ function mouseoverCata(c){
 	cataid=c.find("#id").val();
 }
 function mouseleaveCata(){
-	cataid=$(".checked").find("#id").val();
+	var id=$(".checked").find("#id");
+	if(id.val()==undefined) return;
+	cataid=id.val();
 }
 function mouseoverRecord(r){
 	recordid=r.find("#id").val();
@@ -254,7 +266,8 @@ function  addARecord(){
 					newrecord.find(".rdelete").click(function(){deleteRecord(recordid);});
 					newrecord.find(".rcomp").click(function(){compRecord();});
 					newrecord.find(".rupdate").click(function(){updateRecord(recordid);});
-
+					t.val("");
+					selectCata($("#cata"+cataid));
 				}
 			}
 		});
